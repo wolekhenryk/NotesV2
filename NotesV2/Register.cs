@@ -34,7 +34,7 @@ namespace NotesV2
             if (Validator.IsValidEmail(email) && Validator.IsValidPassword(password) && Validator.PasswordMatch(password, passwordConfirm))
             {
                 var newUser = new User(email, username, password);
-                await newUser.Save(newUser);
+                await newUser.Save();
             }
             else
             {

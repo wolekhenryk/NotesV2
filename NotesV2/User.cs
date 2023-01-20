@@ -40,7 +40,7 @@ namespace NotesV2
 
         public static bool Authenticate(string password, User user) => Hash.Verify(password, user.Password);
 
-        public async Task Save(User user)
+        public async Task Save()
         {
             var db = new Database();
 
@@ -49,11 +49,11 @@ namespace NotesV2
                 new MySqlCommand(
                     "INSERT INTO users (email, username, password, created_at, updated_at) VALUES (@email, @username, @password, @created_at, @updated_at)",
                     db.Connection);
-            db.Command.Parameters.AddWithValue("@email", user.Email);
-            db.Command.Parameters.AddWithValue("@username", user.Username);
-            db.Command.Parameters.AddWithValue("@password", user.Password);
-            db.Command.Parameters.AddWithValue("@created_at", user.Timestamp);
-            db.Command.Parameters.AddWithValue("@updated_at", user.Timestamp);
+            db.Command.Parameters.AddWithValue("@email", Email);
+            db.Command.Parameters.AddWithValue("@username", Username);
+            db.Command.Parameters.AddWithValue("@password", Password);
+            db.Command.Parameters.AddWithValue("@created_at", Timestamp);
+            db.Command.Parameters.AddWithValue("@updated_at", Timestamp);
 
             await db.Command.ExecuteNonQueryAsync();
             await db.CloseConnection();
@@ -66,6 +66,24 @@ namespace NotesV2
 
             db.Command = new MySqlCommand("SELECT * FROM users WHERE email = @email", db.Connection);
             db.Command.Parameters.AddWithValue("@email", email);
+
+            db.Reader = await db.Command.ExecuteReaderAsync();
+
+            if (db.Reader.HasRows)
+            {
+                return new User(db.Reader);
+            }
+            await db.CloseConnection();
+            return null;
+        }
+
+        public static async Task<User> Find(int userId)
+        {
+            var db = new Database();
+            await db.OpenConnection();
+
+            db.Command = new MySqlCommand("SELECT * FROM users WHERE id = @user_id", db.Connection);
+            db.Command.Parameters.AddWithValue("@user_id", userId);
 
             db.Reader = await db.Command.ExecuteReaderAsync();
 

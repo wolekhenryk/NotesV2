@@ -14,7 +14,7 @@ namespace NotesV2
 {
     public partial class Dashboard : MaterialForm
     {
-        private readonly User _authUser;
+        private User _authUser;
         public Dashboard(User authUser)
         {
             _authUser = authUser;
@@ -27,6 +27,30 @@ namespace NotesV2
             materialSkinManager.ColorScheme = new ColorScheme(Primary.BlueGrey800, Primary.BlueGrey900, Primary.BlueGrey500, Accent.LightBlue200, TextShade.WHITE);
 
             lblWelcome.Text = $"Welcome, {_authUser.Username}";
+
+            txbDescription.Padding = new Padding(5);
+        }
+
+        private void materialTabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var currentTab = materialTabControl1.SelectedTab.Name;
+            if (currentTab == "tabLogout")
+            {
+                _authUser = null;
+                Hide();
+
+                var loginForm = new Login();
+                loginForm.Show();
+            }
+        }
+
+        private async void btnSaveNote_Click(object sender, EventArgs e)
+        {
+            var title = txbTitle.Text;
+            var desc = txbDescription.Text;
+
+            var newNote = new Note(title, desc, _authUser);
+            await newNote.Save();
         }
     }
 }
