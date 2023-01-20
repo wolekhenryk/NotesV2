@@ -25,10 +25,7 @@ namespace NotesV2
             Connection = new MySqlConnection($"Server={Server};Database={DatabaseName};Uid={Username};Pwd={Password}");
         }
 
-        public async Task OpenConnection() 
-        {
-            await Connection.OpenAsync();
-        }
+        public async Task OpenConnection() => await Connection.OpenAsync();
 
         public async Task CloseConnection() => await Connection.CloseAsync();
     }
