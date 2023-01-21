@@ -5,8 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySqlConnector;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace NotesV2
 {
@@ -38,13 +36,13 @@ namespace NotesV2
             await db.OpenConnection();
             db.Command =
                 new MySqlCommand(
-                    $"INSERT INTO notes (title, desc, user_id, created_at, updated_at) VALUES ('{Title}', '{Description}', {Author.Id}, '{Timestamp}', '{Timestamp}')",
+                    $"INSERT INTO notes (title, description, user_id, created_at, updated_at) VALUES ('{Title}', '{Description}', {Author.Id}, '{Timestamp}', '{Timestamp}')",
                     db.Connection);
-
-            MessageBox.Show(db.Command.CommandText);
 
             await db.Command.ExecuteNonQueryAsync();
             await db.CloseConnection();
+
+            MessageBox.Show("Note has been inserted");
         }
 
         public static async Task<List<Note>> FindAll(User user)

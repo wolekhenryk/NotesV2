@@ -28,9 +28,16 @@ namespace NotesV2
 
             lblWelcome.Text = $"Welcome, {_authUser.Username}";
 
-            txbDescription.Padding = new Padding(5);
+            /*List<MaterialCard> cardList = new List<MaterialCard>();
+            List<Note> notes = FindAllNotes().Result;
+
+            foreach (var note in notes)
+            {
+                MaterialCard card = new MaterialCard();
+            }*/
         }
 
+        private async Task<List<Note>> FindAllNotes() => await Note.FindAll(_authUser);
         private void materialTabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             var currentTab = materialTabControl1.SelectedTab.Name;
@@ -43,7 +50,6 @@ namespace NotesV2
                 loginForm.Show();
             }
         }
-
         private async void btnSaveNote_Click(object sender, EventArgs e)
         {
             var title = txbTitle.Text;
